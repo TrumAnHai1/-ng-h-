@@ -2,7 +2,8 @@
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
-    <title>Đồng hồ số với nhạc nền</title>
+    <title>Đồng hồ số của Trùm Ăn Hại</title>
+    <link href="https://fonts.googleapis.com/css2?family=Indie+Flower&display=swap" rel="stylesheet">
     <style>
         body {
             display: flex;
@@ -11,42 +12,131 @@
             align-items: center;
             height: 100vh;
             margin: 0;
-            background-color: #f0f0f0;
-            font-family: Arial, sans-serif;
+            background: linear-gradient(180deg, #87CEEB 0%, #4682B4 100%); /* Bầu trời xanh  da trời */
+            font-family: 'Indie Flower', cursive;
+            overflow: hidden; /* Ẩn mây khi ra ngoài khung uhhhhh */
+            position: relative;
         }
-
+        /* Container cho mây ok? */
+        .cloud-container {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            z-index: 1; /* Mây ở dưới đồng hồ dong ho dang hat ru */
+        }
+        /* Hình dạng cl gi day */
+        .cloud {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 100px;
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
+            opacity: 0.7;
+            animation: drift linear infinite;
+        }
+        /* Các mây với kích thước và vị trí khác nhau */
+        .cloud:nth-child(1) {
+            width: 200px;
+            height: 60px;
+            top: 20%;
+            animation-duration: 60s;
+        }
+        .cloud:nth-child(2) {
+            width: 150px;
+            height: 40px;
+            top: 40%;
+            animation-duration: 80s;
+            animation-delay: -20s;
+        }
+        .cloud:nth-child(3) {
+            width: 250px;
+            height: 80px;
+            top: 60%;
+            animation-duration: 70s;
+            animation-delay: -40s;
+        }
+        @keyframes drift {
+            from { transform: translateX(-100%); }
+            to { transform: translateX(100vw); }
+        }
         #clock {
-            font-size: 3em;
-            background-color: #333;
-            color: #00ff88;
+            font-size: 3.5em;
+            background: rgba(255, 255, 255, 0.3); /* Nền trong suốt nhẹ */
+            color: #1e3a8a; /* Xanh đậm nổi bật trên trời */
             padding: 20px 40px;
-            border-radius: 10px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+            border-radius: 15px;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
             text-align: center;
-            letter-spacing: 2px;
+            letter-spacing: 3px;
             margin-bottom: 20px;
+            z-index: 2; /* Đồng hồ trên mây */
+            animation: pulse 2s ease-in-out infinite;
         }
-        button {
-            padding: 10px 20px;
-            font-size: 1em;
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+        }
+        button, input[type="file"] {
+            padding: 12px 24px;
+            font-size: 1.1em;
             cursor: pointer;
-            background-color: #00ff88;
-            color: #333;
+            background: linear-gradient(45deg, #a5b4fc, #f9a8d4); /* Gradient indie */
+            color: #1e1e1e;
             border: none;
-            border-radius: 5px;
-            transition: background-color 0.3s;
+            border-radius: 8px;
+            margin: 8px;
+            transition: transform 0.2s, box-shadow 0.3s;
+            z-index: 2; /* Nút trên mây */
         }
-        button:hover {
-            background-color: #00cc66;
+        button:hover, input[type="file"]::-webkit-file-upload-button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 15px rgba(165, 180, 252, 0.7);
+        }
+        input[type="file"]::-webkit-file-upload-button {
+            background: linear-gradient(45deg, #a5b4fc, #f9a8d4);
+            color: #1e1e1e;
+            border: none;
+            padding: 12px;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+        button.playing {
+            box-shadow: 0 0 15px #f9a8d4, 0 0 25px #a5b4fc;
+            animation: glow 1.5s ease-in-out infinite;
+        }
+        @keyframes glow {
+            0%, 100% { box-shadow: 0 0 15px #f9a8d4; }
+            50% { box-shadow: 0 0 25px #a5b4fc; }
+        }
+        #songInfo {
+            font-size: 1.3em;
+            color: #ffffff; /* Trắng để nổi trên nền trời */
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+            margin-bottom: 15px;
+            z-index: 2; /* Tên bài hát trên mây */
+            animation: fadeIn 1s ease-in;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
         }
     </style>
 </head>
 <body>
-    <div id="clock">00:00:00</div>
+    <div class="cloud-container">
+        <div class="cloud"></div>
+        <div class="cloud"></div>
+        <div class="cloud"></div>
+    </div>
+    <div id="clock">03:32:00</div>
+    <div id="songInfo">Tùy chọn bật nhạc</div>
+    <input type="file" id="musicUpload" accept="audio/*">
     <button onclick="toggleAudio()">Bật/Tắt Nhạc</button>
     <audio id="backgroundMusic" loop>
-        <source src= "URL music" type="audio/mpeg">
-    // xài url đỡ nha bé
+        <!-- Thay bằng file MP3 của Đá Tan nếu có -->
+        <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg">
+        
     </audio>
 
     <script>
@@ -58,19 +148,40 @@
             document.getElementById('clock').textContent = `${hours}:${minutes}:${seconds}`;
         }
 
-        function toggleAudio() {
-            const audio = document.getElementById('backgroundMusic');
-            if (audio.paused) {
+        const audio = document.getElementById('backgroundMusic');
+        const musicUpload = document.getElementById('musicUpload');
+        const playButton = document.querySelector('button');
+
+        musicUpload.addEventListener('change', function(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const url = URL.createObjectURL(file);
+                audio.src = url;
                 audio.play();
-                document.querySelector('button').textContent = 'Tắt Nhạc';
+                playButton.textContent = 'Tắt Nhạc';
+                playButton.classList.add('playing');
+                document.getElementById('songInfo').textContent = `Đang phát: ${file.name}`;
+            }
+        });
+
+        function toggleAudio() {
+            if (audio.src) {
+                if (audio.paused) {
+                    audio.play();
+                    playButton.textContent = 'Tắt Nhạc';
+                    playButton.classList.add('playing');
+                } else {
+                    audio.pause();
+                    playButton.textContent = 'Bật Nhạc';
+                    playButton.classList.remove('playing');
+                }
             } else {
-                audio.pause();
-                document.querySelector('button').textContent = 'Bật Nhạc';
+                alert('Vui lòng chọn một file nhạc trước!');
             }
         }
 
         setInterval(updateClock, 1000);
-        updateClock();
+        updateClock(); // Gọi lần đầu để hiển thị ngay
     </script>
 </body>
 </html>
